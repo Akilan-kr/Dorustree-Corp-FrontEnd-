@@ -9,7 +9,7 @@ import { logoutUser } from '../../Services/Authservice';
 const Menubar = () => {
   const [active, setActive] = useState("home");
 
-  const {user, setUser, quantities} = useContext(StoreContext);
+  const {user, setUser, quantities, setQuantities} = useContext(StoreContext);
 
   const navigate = useNavigate();
 
