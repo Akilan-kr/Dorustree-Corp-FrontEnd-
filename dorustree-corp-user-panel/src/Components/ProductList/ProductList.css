@@ -1,0 +1,26 @@
+.custom-search-btn {
+  color: rgba(51, 70, 110) !important;
+  border: 1px solid rgba(51, 70, 110);
+  background-color: transparent;
+}
+
+.custom-search-btn:hover {
+  background-color: rgba(51, 70, 110);
+  color: white !important;
+}
+
+.custom-table thead tr {
+  background-color: rgba(51, 70, 110) !important;
+}
+
+.custom-table thead th {
+  background-color: rgba(51, 70, 110) !important;
+  color: white !important;
+  border-color: rgba(51, 70, 110) !important;
+}
+
+.custom-table-wrapper {
+  border-radius: 10px;
+  overflow: hidden;   /* VERY IMPORTANT */
+  border: 1px solid #dee2e6;
+}
