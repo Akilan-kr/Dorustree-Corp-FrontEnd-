@@ -35,3 +35,19 @@ export const addProduct = async(product, token) => {
         throw error;
     }
 }
+
+export const addProductsFromExcel = async(formData, token) => {
+    try{
+        const response = await axios.post(`${API_URL}/upload-excel`, formData,
+            {
+                headers : {
+                    Authorization : `Bearer ${token}`
+                }
+            }
+        );
+        return response;
+    } catch (error) {
+        throw error;
+    }
+
+}
