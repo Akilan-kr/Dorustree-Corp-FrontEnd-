@@ -9,7 +9,8 @@ const Login = () => {
 
     const navigate = useNavigate();
 
-    const {setUser} = useContext(StoreContext);
+    const {setUser,loadCartData} = useContext(StoreContext);
+
 
     const [data, setData] = useState({
         userName:'',
@@ -44,7 +45,7 @@ const Login = () => {
                 role: response.data.userRole
                 });
             localStorage.setItem("user:", JSON.stringify(response.data));
-            // await loadCartData(response.data.token);
+            await loadCartData(response.data.token);
             navigate("/");
         } else {
             toast.error('Please check your password and login.')

@@ -7,6 +7,8 @@ import { StoreContext } from './Context/StoreContext';
 import Login from './Pages/Login/Login';
 import Register from './Pages/Register/Register';
 import ExploreProduct from './Pages/ExploreProduct/ExploreProduct';
+import Dashboard from './Pages/Dashboard/Dashboard';
+import RequestVendor from './Components/RequestVendor/RequestVendor';
 
 function App() {
   // const [count, setCount] = useState(0)
@@ -22,6 +24,8 @@ function App() {
         <Route path='/login' element={ user.token? <Home /> : <Login />}/>
         <Route path='/register' element={user.token ? <Home /> : <Register />}/>
         <Route path='/explore' element={<ExploreProduct />}/>
+        <Route path='/mydashboard' element={user.userRole == "VENDOR" ? <Dashboard/> : <Home />}/>
+        <Route path='/becamevendor' element={user.userRole == "USER" ? <RequestVendor/> : <Dashboard />}/>
       </Routes>
     </div>
   )

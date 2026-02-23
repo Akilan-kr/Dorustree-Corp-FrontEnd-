@@ -1,9 +1,6 @@
 import { createContext, useEffect, useState } from "react";
-// import { fetchFoodPowderList } from "../Service/foodService";
 import { addToCart, getCartData, removeQuantityFromCart } from "/src/Services/CartService.js";
 import { fetchProductList } from "../Services/ProductService";
-import axios from "axios";
-// import { fetchCategoryList } from "../Service/CategoryService";
 
 
 export const StoreContext = createContext(null);
@@ -13,7 +10,7 @@ export const StoreContextProvider = (props) =>{
     const pageSize = 10;
     const [productList, setProductList] = useState([]);
     const [currentPage, setCurrentPage] = useState(0); // backend starts at 0
-    const [totalPages, setTotalPages] = useState(0);
+    const [hasNextPage, setHasNextPage] = useState(true);
     const [loading, setLoading] = useState(false);
     const [search, setSearch] = useState("");
 
@@ -30,57 +27,57 @@ export const StoreContextProvider = (props) =>{
 
 
     // to make quantity used in the entire app we placed it in the storecontext 
-    const increaseQuantity = async (foodId) => {
-        setQuantities((prev) => ({...prev,[foodId]: (prev[foodId] || 0)+1}));
+    const increaseQuantity = async (productId) => {
+        setQuantities((prev) => ({...prev,[productId]: (prev[productId] || 0)+1}));
         // Optimistic update
         setCart(prev => {
             const updatedItems = {
                 ...prev.items,
-                [foodId]: (prev.items[foodId] || 0) + 1
+                [productId]: (prev.items[productId] || 0) + 1
             };
 
             return { items: updatedItems };
         });
 
         // Backend only needs +1
-        await addToCart(foodId, user.token);
+        await addToCart(productId, user.token);
     };
 
 
 
-    const decreaseQuantity = async (foodId) => {
-        setQuantities((prev) => ({...prev,[foodId]: (prev[foodId] || 0)-1}));
+    const decreaseQuantity = async (productId) => {
+        setQuantities((prev) => ({...prev,[productId]: (prev[productId] || 0)-1}));
 
         setCart(prev => {
-            const currentQty = prev.items[foodId] || 0;
+            const currentQty = prev.items[productId] || 0;
 
             if (currentQty <= 1) {
                 const updated = { ...prev.items };
-                delete updated[foodId];
+                delete updated[productId];
                 return { items: updated };
             }
 
             return {
                 items: {
                     ...prev.items,
-                    [foodId]: currentQty - 1
+                    [productId]: currentQty - 1
                 }
             };
         });
 
-        await removeQuantityFromCart(foodId, user.token);
+        await removeQuantityFromCart(productId, user.token);
     };
 
 
-    // const removeFromCart = async (foodId) => {
+    // const removeFromCart = async (productId) => {
 
     //     setCart(prev => {
     //         const updated = { ...prev.items };
-    //         delete updated[foodId];
+    //         delete updated[productId];
     //         return { items: updated };
     //     });
 
-    //     await removeFromCartApi(foodId, user.token);
+    //     await removeFromCartApi(productId, user.token);
     // };
 
 
@@ -92,28 +89,21 @@ export const StoreContextProvider = (props) =>{
     }
 
 
-  // 🔥 Fetch products from backend
-    const fetchProducts = async (page = 0, searchTerm = "") => {
-        try {
+   const fetchProducts = async (page = 0, searchTerm = "") => {
+    try {
         setLoading(true);
-
-        const response = await axios.get(
-            `http://localhost:8080/api/product/getproducts?page=${page}&size=${pageSize}&search=${searchTerm}`
-        );
-
-        console.log("Got from content :",response.data.content);
-
-
-        setProductList(response.data.content);
-        setTotalPages(response.data.totalPages);
-        setCurrentPage(response.data.number);
-
-        } catch (error) {
+        const data = await fetchProductList(page, searchTerm);
+        setProductList(data);
+        setCurrentPage(page);
+        setHasNextPage(data.length === pageSize); // disable next page if less than pageSize
+    } catch (error) {
         console.error("Error fetching products:", error);
-        } finally {
+    } finally {
         setLoading(false);
-        }
-    };
+    }
+};
+
+
 
 
     const contextValue = {
@@ -123,29 +113,24 @@ export const StoreContextProvider = (props) =>{
         decreaseQuantity,
         setQuantities,
         // removeFromCart,
+        hasNextPage,
         quantities,
         user,
         setUser,
         fetchProducts,
         currentPage,
         setCurrentPage,
-        totalPages,
         loading,
         search,
         setSearch,
-        // loadCartData
+        loadCartData
     };
 
 
 
     useEffect(() =>{
         async function loadData(){
-            const data = await fetchProducts();
-            setProductList(data);
-            // console.log(data);
-    //         const category = await fetchCategoryList();
-    //         setCategoryList(category);
-    //         // console.log(data);
+            await fetchProducts(0, search);
 
                 const storedUser = localStorage.getItem("user:");
                 // console.log(storedUser);
@@ -157,10 +142,7 @@ export const StoreContextProvider = (props) =>{
                     loadCartData(parsedUser.token);
                     // console.log(parsedUser.token)
                     
-                }
-    //             
-                
-            
+                }           
         }
         loadData();
     }, []);

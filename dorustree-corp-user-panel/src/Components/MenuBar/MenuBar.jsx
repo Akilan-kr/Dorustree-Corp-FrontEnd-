@@ -87,14 +87,14 @@ const Menubar = () => {
               />
             </button>
             <ul className="dropdown-menu dropdown-menu-end cursor-pointer"  aria-labelledby="dropdownMenuButton">
-              {user.role === "USER" ?
+              {user.userRole == "USER" ?
               (
               <>
                 <li>
                     <button className="dropdown-item" onClick={() => navigate('/myorders')}>Orders</button>
                 </li>
                 <li>
-                    <button className="dropdown-item" onClick={() => navigate('/your')}>Became Vendor</button>
+                    <button className="dropdown-item" onClick={() => navigate('/becamevendor')}>Became Vendor</button>
                 </li>
                 <li>
                     <button className="dropdown-item" onClick={logout}>Logout</button>

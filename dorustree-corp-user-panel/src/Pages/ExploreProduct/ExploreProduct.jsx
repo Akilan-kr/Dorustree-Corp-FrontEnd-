@@ -1,15 +1,14 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import "./ExploreProduct.css";
 import { StoreContext } from "../../Context/StoreContext";
 
 function ExploreProduct() {
-
   const {
     productList,
     fetchProducts,
     currentPage,
     setCurrentPage,
-    totalPages,
+    hasNextPage,
     loading,
     search,
     setSearch,
@@ -18,18 +17,26 @@ function ExploreProduct() {
     decreaseQuantity
   } = useContext(StoreContext);
 
-  // // Fetch products when page changes
-  // useEffect(() => {
-  //   fetchProducts(currentPage, search);
-  //   // console.log(productList);
-  // }, [currentPage]);
+  const [debouncedSearch, setDebouncedSearch] = useState(search);
 
-  // Handle Search
+  // Fetch products when page or search changes
+  useEffect(() => {
+    fetchProducts(currentPage, debouncedSearch);
+  }, [currentPage, debouncedSearch]);
+
+  // Debounce search input
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search);
+      setCurrentPage(0); // reset to first page when search changes
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [search]);
+
+  // Handle search input
   const handleSearch = (e) => {
-    const value = e.target.value;
-    setSearch(value);
-    setCurrentPage(0);
-    fetchProducts(0, value);
+    setSearch(e.target.value);
   };
 
   return (
@@ -38,12 +45,11 @@ function ExploreProduct() {
       {/* Search */}
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h4 className="mb-0">Product List</h4>
-
         <input
           type="text"
           className="form-control"
           style={{ width: "250px" }}
-          placeholder="Search..."
+          placeholder="Search by name or category..."
           value={search}
           onChange={handleSearch}
         />
@@ -71,9 +77,7 @@ function ExploreProduct() {
             </thead>
 
             <tbody>
-              {
-              
-              productList.map((item, index) => {
+              {productList.map((item, index) => {
                 const id = item.productId;
                 const qty = quantities[id] || 0;
 
@@ -86,29 +90,12 @@ function ExploreProduct() {
                     <td>
                       {qty > 0 ? (
                         <div className="d-flex align-items-center gap-2">
-                          <button
-                            className="btn btn-danger btn-sm"
-                            onClick={() => decreaseQuantity(id)}
-                          >
-                            -
-                          </button>
-
+                          <button className="btn btn-danger btn-sm" onClick={() => decreaseQuantity(id)}>-</button>
                           <span className="fw-bold">{qty}</span>
-
-                          <button
-                            className="btn btn-success btn-sm"
-                            onClick={() => increaseQuantity(id)}
-                          >
-                            +
-                          </button>
+                          <button className="btn btn-success btn-sm" onClick={() => increaseQuantity(id)}>+</button>
                         </div>
                       ) : (
-                        <button
-                          className="btn btn-primary btn-sm"
-                          onClick={() => increaseQuantity(id)}
-                        >
-                          Add
-                        </button>
+                        <button className="btn btn-primary btn-sm" onClick={() => increaseQuantity(id)}>Add</button>
                       )}
                     </td>
                   </tr>
@@ -117,12 +104,11 @@ function ExploreProduct() {
 
               {productList.length === 0 && (
                 <tr>
-                  <td colSpan="5" className="text-center py-3">
-                    No Products Found
-                  </td>
+                  <td colSpan="5" className="text-center py-3">No Products Found</td>
                 </tr>
               )}
             </tbody>
+
           </table>
         </div>
       )}
@@ -132,7 +118,7 @@ function ExploreProduct() {
         <ul className="pagination justify-content-end">
 
           {/* Previous */}
-          <li className={`page-item ${currentPage === 0 && "disabled"}`}>
+          <li className={`page-item ${currentPage === 0 ? "disabled" : ""}`}>
             <button
               className="page-link"
               onClick={() => setCurrentPage(prev => prev - 1)}
@@ -142,27 +128,12 @@ function ExploreProduct() {
             </button>
           </li>
 
-          {/* Page Numbers */}
-          {[...Array(totalPages)].map((_, i) => (
-            <li
-              key={i}
-              className={`page-item ${currentPage === i ? "active" : ""}`}
-            >
-              <button
-                className="page-link"
-                onClick={() => setCurrentPage(i)}
-              >
-                {i + 1}
-              </button>
-            </li>
-          ))}
-
           {/* Next */}
-          <li className={`page-item ${currentPage === totalPages - 1 && "disabled"}`}>
+          <li className={`page-item ${!hasNextPage ? "disabled" : ""}`}>
             <button
               className="page-link"
               onClick={() => setCurrentPage(prev => prev + 1)}
-              disabled={currentPage === totalPages - 1}
+              disabled={!hasNextPage}
             >
               Next
             </button>
