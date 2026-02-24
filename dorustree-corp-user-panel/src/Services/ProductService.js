@@ -12,7 +12,7 @@ const PAGE_SIZE = 10; // default page size, can be overridden
  * @returns {Promise<Array>} List of products
  */
 
-
+//for user
 export const fetchProductList = async (page = 0, searchTerm = "", size = PAGE_SIZE) => {
     try {
         const response = await axios.get(`${API_URL}/getproducts?page=${page}&size=${size}&search=${searchTerm}`);
@@ -23,6 +23,7 @@ export const fetchProductList = async (page = 0, searchTerm = "", size = PAGE_SI
     }
 };
 
+//for vendor
 export const addProduct = async(product, token) => {
     try {
         const response = await axios.post(`${API_URL}/addproduct`, product, {
@@ -34,8 +35,8 @@ export const addProduct = async(product, token) => {
     } catch (error) {
         throw error;
     }
-}
-
+};
+//for vendor
 export const addProductsFromExcel = async(formData, token) => {
     try{
         const response = await axios.post(`${API_URL}/upload-excel`, formData,
@@ -50,4 +51,70 @@ export const addProductsFromExcel = async(formData, token) => {
         throw error;
     }
 
-}
+};
+
+
+  // Fetch vendor products
+ export const getVendorProducts = async (page = 0, size = 10, token) => {
+    const res = await axios.get(`${API_URL}/getproductsofloginvendor?page=${page}&size=${size}`,{
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    return res.data; // adjust if your API wraps response
+  };
+
+  // Toggle product status (ACTIVE / INACTIVE)
+    export const toggleProductStatus = async (productId, token) => {
+        const res = await axios.put(
+            `${API_URL}/statusofproduct/${productId}`,
+            {}, 
+            {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+            }
+        );
+        return res.data;
+    };
+
+
+  // Delete product
+ export const deleteProduct = async (productId, token) => {
+    const res = await axios.delete(`${API_URL}/deleteproduct/${productId}` ,
+            {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+    return res.data;
+  };
+
+  // Get product by ID
+    export const getProductById = async (productId, token) => {
+    const res = await axios.get(
+        `${API_URL}/getproduct/${productId}`, 
+        {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+        }
+    );
+    return res.data;
+    };
+
+
+// Update product
+    export const updateProduct = async (productId, productData, token) => {
+    const res = await axios.put(
+        `${API_URL}/updateproduct/${productId}`,
+        productData,
+        {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+        }
+    );
+    return res.data;
+    };
+

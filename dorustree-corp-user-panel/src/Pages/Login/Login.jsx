@@ -37,15 +37,16 @@ const Login = () => {
     // console.log("data",data);
     try {
         const response = await loginUser(data);
+        console.log(response)
         if(response.status === 202){
             toast.success('Logged In succuessfully');
             setUser({
-                token: response.data.token,
-                email: response.data.email,
-                role: response.data.userRole
+                token: response.data.data.token,
+                email: response.data.data.email,
+                role: response.data.data.userRole
                 });
-            localStorage.setItem("user:", JSON.stringify(response.data));
-            await loadCartData(response.data.token);
+            localStorage.setItem("user:", JSON.stringify(response.data.data));
+            await loadCartData(response.data.data.token);
             navigate("/");
         } else {
             toast.error('Please check your password and login.')

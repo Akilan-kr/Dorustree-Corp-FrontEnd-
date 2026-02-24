@@ -92,10 +92,11 @@ export const StoreContextProvider = (props) =>{
    const fetchProducts = async (page = 0, searchTerm = "") => {
     try {
         setLoading(true);
-        const data = await fetchProductList(page, searchTerm);
-        setProductList(data);
+        const response = await fetchProductList(page, searchTerm);
+        // console.log(response);
+        setProductList(response.data);
         setCurrentPage(page);
-        setHasNextPage(data.length === pageSize); // disable next page if less than pageSize
+        setHasNextPage(response.data.length === pageSize); // disable next page if less than pageSize
     } catch (error) {
         console.error("Error fetching products:", error);
     } finally {

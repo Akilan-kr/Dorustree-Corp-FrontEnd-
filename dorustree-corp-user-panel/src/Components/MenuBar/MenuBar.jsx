@@ -87,7 +87,7 @@ const Menubar = () => {
               />
             </button>
             <ul className="dropdown-menu dropdown-menu-end cursor-pointer"  aria-labelledby="dropdownMenuButton">
-              {user.userRole == "USER" ?
+              {user.userRole === "USER" ?
               (
               <>
                 <li>
