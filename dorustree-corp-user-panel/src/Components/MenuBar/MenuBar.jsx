@@ -20,7 +20,7 @@ const Menubar = () => {
     try{
         const response = await logoutUser(user.token)
         if(response.status === 200){
-            localStorage.removeItem('user:');
+            localStorage.removeItem('user');
         
             setUser({
                     email: "",
@@ -102,7 +102,7 @@ const Menubar = () => {
               </>):(
                 <>
                 <li>
-                    <button className="dropdown-item" onClick={() => navigate('/mydashboard')}>Vendor Dashboard</button>
+                    <button className="dropdown-item" onClick={() => navigate('/vendorprofile')}>Vendor Dashboard</button>
                 </li>
                 <li>
                     <button className="dropdown-item" onClick={logout}>Logout</button>

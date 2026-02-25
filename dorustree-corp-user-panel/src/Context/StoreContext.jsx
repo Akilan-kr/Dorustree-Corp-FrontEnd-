@@ -14,6 +14,8 @@ export const StoreContextProvider = (props) =>{
     const [loading, setLoading] = useState(false);
     const [search, setSearch] = useState("");
 
+    const [cartDetails, setCartDetails] = useState([]);
+
     const [cart, setCart] = useState({
         items: {}
     });
@@ -81,12 +83,32 @@ export const StoreContextProvider = (props) =>{
     // };
 
 
-    const loadCartData = async(token) => {
-        const items = await getCartData(token);
-        console.log(token);
-        setQuantities(items);
-        console.log(items);
+    const loadCartData = async (token) => {
+    try {
+        const items = await getCartData(token); // { productId: quantity }
+        
+        setQuantities(items); // for quick increment/decrement
+
+        // Fetch product details for all cart items
+        const productIds = Object.keys(items);
+        if (productIds.length === 0) {
+        setCartDetails([]);
+        return;
+        }
+
+        const response = await fetchProductList(0, "", productIds); 
+        // assuming your API can accept productIds and return their details
+
+        const detailedCart = response.data.map(product => ({
+        ...product,
+        quantity: items[product.productId] || 0
+        }));
+
+        setCartDetails(detailedCart);
+    } catch (error) {
+        console.error("Error loading cart data:", error);
     }
+    };
 
 
    const fetchProducts = async (page = 0, searchTerm = "") => {
@@ -133,7 +155,7 @@ export const StoreContextProvider = (props) =>{
         async function loadData(){
             await fetchProducts(0, search);
 
-                const storedUser = localStorage.getItem("user:");
+                const storedUser = localStorage.getItem("user");
                 // console.log(storedUser);
 
                 if (storedUser) {

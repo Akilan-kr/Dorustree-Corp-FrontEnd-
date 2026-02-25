@@ -9,11 +9,12 @@ function DashboardSidebar() {
     { label: 'Vendor Profile', path: '/vendorprofile' },
     { label: 'Add Product', path: '/addproduct' },
     { label: 'Product Inventory', path: '/productinventory' },
-    { label: 'Received Orders', path: '/receivedorders' }
+    { label: 'Received Orders', path: '/receivedorders' },
+    { label: 'Previous Orders', path: '/previousorders'}
   ];
 
   return (
-    <div style={{ display: 'flex', height: '100vh', fontFamily: 'Arial, sans-serif' }}>
+    <div style={{ display: 'flex', height: '100vh' }}>
       {/* Sidebar */}
       <div style={{ width: '220px', backgroundColor: '#2c3e50', color: '#ecf0f1', padding: '20px', flexShrink: 0 }}>
         <h2 style={{ fontSize: '18px', marginBottom: '30px', textAlign: 'center' }}>Vendor Dashboard</h2>

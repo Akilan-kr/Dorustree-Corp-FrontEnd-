@@ -4,7 +4,7 @@ import { FaTrash } from "react-icons/fa";
 import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { StoreContext } from "../../Context/StoreContext";
-import DashboardSidebar from "../DashboardSidebar/DashboardSidebar";
+import DashboardSidebar from "../../Components/DashboardSidebar/DashboardSidebar";
 
 const ProductInventory = () => {
   const [productInventory, setProductInventory] = useState([]);

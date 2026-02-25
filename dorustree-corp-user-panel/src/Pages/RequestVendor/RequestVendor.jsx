@@ -31,14 +31,16 @@ function RequestVendor() {
     }
 
     try {
-      const responseMessage = await requestVendor(user.token);
-      setMessage(responseMessage);
-      // Update status to pending immediately after request
-      setStatus('Status_Pending');
-    } catch (errorMessage) {
-      setMessage(errorMessage);
+      const response = await requestVendor(user.token); // response is an object
+      // Extract the message from the object
+      setMessage(response.message || 'Request submitted'); 
+      setStatus('Status_Pending'); // Update status
+    } catch (error) {
+      console.error(error);
+      setMessage(error?.message || 'Something went wrong');
     }
   };
+
 
   // Decide button text and disabled state
   const getButtonProps = () => {

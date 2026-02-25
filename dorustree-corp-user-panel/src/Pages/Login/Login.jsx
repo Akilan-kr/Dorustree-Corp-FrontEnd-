@@ -24,7 +24,7 @@ const Login = () => {
    };
 
    useEffect(() =>{
-                   const storedUser = localStorage.getItem("user:");
+                   const storedUser = localStorage.getItem("user");
                    if (storedUser) {
                        navigate("/");
                    }
@@ -45,7 +45,7 @@ const Login = () => {
                 email: response.data.data.email,
                 role: response.data.data.userRole
                 });
-            localStorage.setItem("user:", JSON.stringify(response.data.data));
+            localStorage.setItem("user", JSON.stringify(response.data.data));
             await loadCartData(response.data.data.token);
             navigate("/");
         } else {
