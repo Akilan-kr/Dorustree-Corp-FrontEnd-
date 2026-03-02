@@ -19,12 +19,13 @@ function UserManagement() {
       setLoading(true);
       const response = await getAllUsers(user.token);
       const data = response.data.data;
+      console.log(data)
 
       setUsers(data);
 
-      const adminCount = data.filter(u => u.userRole === "ADMIN").length;
-      const vendorCount = data.filter(u => u.userRole === "VENDOR").length;
-      const userCount = data.filter(u => u.userRole === "USER").length;
+      const adminCount = data.filter(u => u.userRoles === "ADMIN").length;
+      const vendorCount = data.filter(u => u.userRoles === "VENDOR").length;
+      const userCount = data.filter(u => u.userRoles === "USER").length;
 
       setCounts({ ADMIN: adminCount, VENDOR: vendorCount, USER: userCount });
 
@@ -36,8 +37,11 @@ function UserManagement() {
   };
 
   useEffect(() => {
-    fetchUsers();
-  }, []);
+    if (user?.token) {
+      fetchUsers();
+    }
+  }, [user]);
+
 
   const handleDeleteUser = async (userId) => {
     if (!window.confirm("Are you sure you want to delete this user?")) return;
@@ -99,7 +103,7 @@ function UserManagement() {
               <th>Phone</th>
               <th>Address</th>
               <th>Created At</th>
-              <th>Action</th> {/* new column for delete */}
+              <th>Action</th> 
             </tr>
           </thead>
           <tbody>
@@ -110,8 +114,8 @@ function UserManagement() {
                   <td>{userItem.userName}</td>
                   <td>{userItem.userEmail}</td>
                   <td>
-                    <Badge bg={userItem.userRole === "ADMIN" ? "danger" : userItem.userRole === "VENDOR" ? "primary" : "success"}>
-                      {userItem.userRole}
+                    <Badge bg={userItem.userRoles === "ADMIN" ? "danger" : userItem.userRoles === "VENDOR" ? "primary" : "success"}>
+                      {userItem.userRoles}
                     </Badge>
                   </td>
                   <td>

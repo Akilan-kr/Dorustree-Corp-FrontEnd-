@@ -24,40 +24,57 @@ const Login = () => {
         setData(data => ({...data, [name]: value}));
    };
 
-   useEffect(() =>{
-                   const storedUser = localStorage.getItem("user");
-                   if (storedUser) {
-                       navigate("/");
-                   }
-       }, []);
+    useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+        setUser(JSON.parse(storedUser));
+    }
+    }, []);
+
 
    
 
-   const onsubmitHandler = async(Event) => {
+    const onsubmitHandler = async (Event) => {
     Event.preventDefault();
-    // console.log("data",data);
+
     try {
         const response = await loginUser(data);
-        console.log(response)
-        if(response.status === 202){
-            toast.success('Logged In succuessfully');
-            setUser({
-                token: response.data.data.token,
-                email: response.data.data.email,
-                role: response.data.data.userRole
-                });
-            localStorage.setItem("user", JSON.stringify(response.data.data));
-            
-            navigate("/");
-        } else {
-            toast.error('Please check your password and login.')
-        }
-    } catch (error) {
-        toast.error('Unable to login, Please try again.')
-        console.log('Error while login:', error)
-    }
 
-   };
+        console.log("LOGIN RESPONSE:", response);
+
+        if (response.status === 202) {
+        const userData = response.data.data;
+
+        const userObject = {
+            token: userData.token,
+            email: userData.email,
+            role: userData.userRole
+        };
+
+    //         localStorage.setItem("TEST_KEY", "HELLO_WORLD");
+
+    // console.log("Saved value:", localStorage.getItem("TEST_KEY"));
+
+    // alert("Check localStorage now");
+
+    
+
+        console.log(JSON.stringify(userObject))
+        setUser(userObject);
+        localStorage.setItem("user", JSON.stringify(userObject));
+
+        toast.success("Logged in successfully");
+        navigate("/allusers");
+        } else {
+        toast.error("Invalid credentials");
+        }
+
+    } catch (error) {
+        console.log("Login error:", error);
+        toast.error("Unable to login, please try again.");
+    }
+    };
+
 
   return (
     <div className="login-container">

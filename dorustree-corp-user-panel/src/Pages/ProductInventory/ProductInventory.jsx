@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { deleteProduct, getVendorProducts, toggleProductStatus } from "../../Services/ProductService";
-import { FaTrash } from "react-icons/fa";
-import { Button } from "react-bootstrap";
+import { FaTrash, FaEdit } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { StoreContext } from "../../Context/StoreContext";
 import DashboardSidebar from "../../Components/DashboardSidebar/DashboardSidebar";
@@ -13,16 +12,14 @@ const ProductInventory = () => {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
-  const {user} = useContext(StoreContext);
+  const { user } = useContext(StoreContext);
 
-  // Fetch products on page load and whenever currentPage changes
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      const data = await getVendorProducts(currentPage,10, user.token);
-      console.log(data.data)
-      setProductInventory(data.data); // adjust if your API wraps data
-      setHasNextPage(data.data.hasNext || false); // if API returns pagination info
+      const data = await getVendorProducts(currentPage, 10, user.token);
+      setProductInventory(data.data.content || data.data);
+      setHasNextPage(data.data.hasNext || false);
     } catch (err) {
       console.error("Error fetching vendor products:", err);
     } finally {
@@ -34,131 +31,202 @@ const ProductInventory = () => {
     fetchProducts();
   }, [currentPage]);
 
-  // Toggle product status
   const handleToggleStatus = async (productId) => {
-    try {
-      await toggleProductStatus(productId, user.token);
-      fetchProducts(); // refresh after status change
-    } catch (err) {
-      console.error(err);
-    }
+    await toggleProductStatus(productId, user.token);
+    fetchProducts();
   };
 
-  // Delete product
   const handleDelete = async (productId) => {
-    if (window.confirm("Are you sure you want to delete this product?")) {
-      try {
-        await deleteProduct(productId, user.token);
-        fetchProducts(); // refresh after delete
-      } catch (err) {
-        console.error(err);
-      }
+    if (window.confirm("Delete this product?")) {
+      await deleteProduct(productId, user.token);
+      fetchProducts();
     }
   };
 
-  return (<div style={{ display: 'flex', height: '100vh', fontFamily: 'Arial, sans-serif' }}>
-      {/* Sidebar */}
-      <div style={{ width: '220px', flexShrink: 0 }}>
-        <DashboardSidebar />
-      </div>
-    <div className="container mt-4">
-      <h4>Product Inventory</h4>
+  const totalProducts = productInventory.length;
+  const activeProducts = productInventory.filter(p => p.productStatus === "ACTIVE").length;
+  const inactiveProducts = totalProducts - activeProducts;
 
-      {loading && (
-        <div className="text-center my-3">
-          <div className="spinner-border text-primary"></div>
+  return (
+    <div style={{ display: "flex", minHeight: "100vh", background: "#f4f6f9" }}>
+      <DashboardSidebar />
+
+      <div style={{ flex: 1, padding: "40px" }}>
+        {/* Header */}
+        <div style={{ marginBottom: "25px" }}>
+          <h2 style={{ marginBottom: "5px" }}>Product Inventory</h2>
+          <p style={{ color: "#666" }}>
+            Manage, edit and monitor your listed products.
+          </p>
         </div>
-      )}
 
-      {!loading && (
-        <div className="table-responsive">
-          <table className="table table-striped table-hover">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Name</th>
-                <th>Category</th>
-                <th>Price (₹)</th>
-                <th>Quantity</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
+        {/* Summary Cards */}
+        <div style={{ display: "flex", gap: "20px", marginBottom: "30px" }}>
+          {summaryCard("Total Products", totalProducts, "#2c3e50")}
+          {summaryCard("Active", activeProducts, "#27ae60")}
+          {summaryCard("Inactive", inactiveProducts, "#e74c3c")}
+        </div>
 
-            <tbody>
-              {productInventory.map((product, idx) => (
-                <tr key={product.productId}>
-                  <td>{currentPage * 10 + idx + 1}</td>
-                  <td>{product.productName}</td>
-                  <td>{product.productCategory}</td>
-                  <td>{product.productPrice}</td>
-                  <td>{product.productQuantity}</td>
-                  <td>
-                    <Button
-                      size="sm"
-                      variant={product.productStatus === "ACTIVE" ? "success" : "secondary"}
-                      onClick={() => handleToggleStatus(product.productId)}
-                    >
-                      {product.productStatus}
-                    </Button>
-                  </td>
-                  <td className="d-flex gap-2">
-                    <Button
-                      size="sm"
-                      variant="primary"
-                      onClick={() => navigate(`/mydashboard/editproduct/${product.productId}`)}
-//<Route path='/mydashboard/editproduct' element={<EditProduct/>}/>
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="danger"
-                      onClick={() => handleDelete(product.productId)}
-                    >
-                      <FaTrash />
-                    </Button>
-                  </td>
-                </tr>
-              ))}
-
-              {productInventory.length === 0 && (
+        {/* Table Card */}
+        <div style={tableCard}>
+          {loading ? (
+            <div style={{ textAlign: "center", padding: "30px" }}>
+              Loading...
+            </div>
+          ) : (
+            <table style={tableStyle}>
+              <thead>
                 <tr>
-                  <td colSpan="7" className="text-center py-3">No Products Found</td>
+                  <th>#</th>
+                  <th>Name</th>
+                  <th>Category</th>
+                  <th>Price (₹)</th>
+                  <th>Qty</th>
+                  <th>Status</th>
+                  <th>Actions</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
+              </thead>
+
+              <tbody>
+                {productInventory.map((product, idx) => (
+                  <tr key={product.productId} style={{padding: "5px"}}>
+                    <td>{currentPage * 10 + idx + 1}</td>
+                    <td>{product.productName}</td>
+                    <td>{product.productCategory}</td>
+                    <td>{product.productPrice}</td>
+                    <td>{product.productQuantity}</td>
+
+                    <td>
+                      <span
+                        onClick={() => handleToggleStatus(product.productId)}
+                        style={{
+                          padding: "5px 12px",
+                          borderRadius: "20px",
+                          cursor: "pointer",
+                          fontSize: "13px",
+                          background:
+                            product.productStatus === "ACTIVE"
+                              ? "#d4edda"
+                              : "#f8d7da",
+                          color:
+                            product.productStatus === "ACTIVE"
+                              ? "#155724"
+                              : "#721c24"
+                        }}
+                      >
+                        {product.productStatus}
+                      </span>
+                    </td>
+
+                    <td style={{ display: "flex", gap: "10px" }}>
+                      <button
+                        onClick={() =>
+                          navigate(`/mydashboard/editproduct/${product.productId}`)
+                        }
+                        style={editBtn}
+                      >
+                        <FaEdit />
+                      </button>
+
+                      <button
+                        onClick={() => handleDelete(product.productId)}
+                        style={deleteBtn}
+                      >
+                        <FaTrash />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+
+                {productInventory.length === 0 && (
+                  <tr>
+                    <td colSpan="7" style={{ textAlign: "center", padding: "20px" }}>
+                      No products found.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          )}
         </div>
-      )}
 
-      {/* Pagination */}
-      <nav className="mt-3">
-        <ul className="pagination justify-content-end">
-          <li className={`page-item ${currentPage === 0 ? "disabled" : ""}`}>
-            <button
-              className="page-link"
-              onClick={() => setCurrentPage(prev => prev - 1)}
-              disabled={currentPage === 0}
-            >
-              Previous
-            </button>
-          </li>
+        {/* Pagination */}
+        <div style={{ marginTop: "20px", display: "flex", justifyContent: "flex-end", gap: "10px" }}>
+          <button
+            disabled={currentPage === 0}
+            onClick={() => setCurrentPage(prev => prev - 1)}
+            style={pageBtn}
+          >
+            Previous
+          </button>
 
-          <li className={`page-item ${!hasNextPage ? "disabled" : ""}`}>
-            <button
-              className="page-link"
-              onClick={() => setCurrentPage(prev => prev + 1)}
-              disabled={!hasNextPage}
-            >
-              Next
-            </button>
-          </li>
-        </ul>
-      </nav>
-    </div>
+          <button
+            disabled={!hasNextPage}
+            onClick={() => setCurrentPage(prev => prev + 1)}
+            style={pageBtn}
+          >
+            Next
+          </button>
+        </div>
+      </div>
     </div>
   );
+};
+
+/* ---------- Styles ---------- */
+
+const summaryCard = (title, value, color) => (
+  <div
+    style={{
+      flex: 1,
+      background: "#fff",
+      padding: "20px",
+      borderRadius: "12px",
+      boxShadow: "0 6px 18px rgba(0,0,0,0.05)"
+    }}
+  >
+    <h4 style={{ margin: 0, color }}>{value}</h4>
+    <p style={{ margin: 0, color: "#666" }}>{title}</p>
+  </div>
+);
+
+const tableCard = {
+  background: "#fff",
+  borderRadius: "12px",
+  padding: "20px",
+  boxShadow: "0 6px 18px rgba(0,0,0,0.05)"
+};
+
+const tableStyle = {
+  width: "100%",
+  borderCollapse: "collapse"
+};
+
+const editBtn = {
+  background: "#3498db",
+  border: "none",
+  padding: "6px 10px",
+  borderRadius: "6px",
+  color: "#fff",
+  cursor: "pointer"
+};
+
+const deleteBtn = {
+  background: "#e74c3c",
+  border: "none",
+  padding: "6px 10px",
+  borderRadius: "6px",
+  color: "#fff",
+  cursor: "pointer"
+};
+
+const pageBtn = {
+  padding: "8px 15px",
+  borderRadius: "6px",
+  border: "none",
+  background: "#2c3e50",
+  color: "#fff",
+  cursor: "pointer"
 };
 
 export default ProductInventory;

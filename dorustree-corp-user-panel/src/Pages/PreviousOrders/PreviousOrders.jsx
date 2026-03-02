@@ -54,11 +54,11 @@ function PreviousOrders() {
   return (
     <div style={{ display: "flex", minHeight: "100vh" }}>
       {/* Sidebar */}
-      <div style={{ width: "220px", flexShrink: 0, background: '#2c3e50' }}>
+      <div style={{ width: "220px", flexShrink: 0, background: "#2c3e50" }}>
         <DashboardSidebar />
       </div>
 
-      <div style={{ flex: 1, padding: "40px", background: "#f4f6f9" }}>
+      <div style={{ flex: 1, padding: "40px" }}>
         <h2 style={{ marginBottom: "30px" }}>📦 Received Orders</h2>
 
         {loading && <p>Loading orders...</p>}

@@ -3,6 +3,8 @@ import { StoreContext } from "../../Context/StoreContext";
 import { Card, Button, Table, Spinner } from "react-bootstrap";
 import { getAllOrders } from "../../Service/AdminOrdersService";
 import { getProductById } from "../../Service/ProductService";
+import { getUserById } from "../../Service/AdminService";
+
 
 function Orders() {
   const { user } = useContext(StoreContext);
@@ -11,9 +13,19 @@ function Orders() {
   const [expandedOrderId, setExpandedOrderId] = useState(null);
   const [loadingProducts, setLoadingProducts] = useState({}); // per-order loading
   const [orderProducts, setOrderProducts] = useState({}); // product info per order
+  const [usersData, setUsersData] = useState({}); // user info cache
+
+
 
   // Fetch all orders
   const fetchOrders = async () => {
+    if (!user?.token) {
+      console.log("Token not ready yet");
+      return;
+    }
+
+    console.log("TOKEN SENT:", user.token);
+
     setLoading(true);
     try {
       const data = await getAllOrders(user.token);
@@ -25,24 +37,44 @@ function Orders() {
     }
   };
 
-  // Fetch product info for a specific order
-  const fetchOrderProducts = async (orderId, items) => {
+
+  const fetchOrderProducts = async (orderId, items, orderedUserId) => {
     setLoadingProducts(prev => ({ ...prev, [orderId]: true }));
 
     const productData = {};
-    for (const item of items) {
-      try {
-        const product = await getProductById(item.productId, user.token);
-        productData[item.productId] = product.data;
-        console.log(product.data) // <-- use returned object directly
-      } catch (err) {
-        productData[item.productId] = { productName: "Unknown", vendorId: "Unknown" };
+    const userCache = { ...usersData };
+
+    try {
+      // 🔹 Fetch ordered user name
+      if (!userCache[orderedUserId]) {
+        const userRes = await getUserById(user.token, orderedUserId);
+        userCache[orderedUserId] = userRes.data.data;
       }
+
+      for (const item of items) {
+        const productRes = await getProductById(item.productId, user.token);
+        const product = productRes.data;
+
+        productData[item.productId] = product;
+
+        // 🔹 Fetch vendor name
+        const vendorId = product.productVendorId;
+        if (vendorId && !userCache[vendorId]) {
+          const vendorRes = await getUserById(user.token, vendorId);
+          userCache[vendorId] = vendorRes.data.data;
+        }
+      }
+
+      setUsersData(userCache);
+      setOrderProducts(prev => ({ ...prev, [orderId]: productData }));
+
+    } catch (err) {
+      console.error("Error fetching order details:", err);
     }
 
-    setOrderProducts(prev => ({ ...prev, [orderId]: productData }));
     setLoadingProducts(prev => ({ ...prev, [orderId]: false }));
   };
+
 
   // Expand/collapse order details
   const toggleExpand = (order) => {
@@ -50,13 +82,21 @@ function Orders() {
       setExpandedOrderId(null);
     } else {
       setExpandedOrderId(order.id);
-      fetchOrderProducts(order.id, order.orderedItems || []);
+      fetchOrderProducts(
+        order.id,
+        order.orderedItems || [],
+        order.orderedUserId
+      );
+
     }
   };
 
-  useEffect(() => {
-    fetchOrders();
-  }, []);
+    useEffect(() => {
+      if (user?.token) {
+        fetchOrders();
+      }
+    }, [user]);
+
 
   return (
     <div className="container mt-4">
@@ -84,7 +124,12 @@ function Orders() {
 
             {expandedOrderId === order.id && (
               <Card.Body>
-                <p><strong>Ordered By User ID:</strong> {order.orderedUserId}</p>
+                          <p>
+                          <strong>Ordered By:</strong>{" "}
+                          {usersData[order.orderedUserId]
+                            ? usersData[order.orderedUserId].userName
+                            : "Loading..."}
+                        </p>
 
                 {loadingProducts[order.id] ? (
                   <div className="text-center">
@@ -109,7 +154,12 @@ function Orders() {
                             <tr key={idx}>
                               <td>{idx + 1}</td>
                               <td>{product ? product.productName : "Loading..."}</td>
-                              <td>{product ? product.productVendorId || "N/A" : "Loading..."}</td>
+                              <td>
+                                {product && usersData[product.productVendorId]
+                                  ? usersData[product.productVendorId].userName
+                                  : "Loading..."}
+                              </td>
+
                               <td>{item.productQuantity}</td>
                               <td>{item.productPrice}</td>
                             </tr>

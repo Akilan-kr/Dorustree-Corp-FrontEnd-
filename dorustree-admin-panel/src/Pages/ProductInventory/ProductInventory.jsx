@@ -22,7 +22,9 @@ const ProductInventory = () => {
   const fetchVendors = async () => {
     try {
       const response = await getAllUsers(user.token);
-      const vendorList = response.data.data.filter(v => v.userRole === "VENDOR");
+       console.log(response)
+
+      const vendorList = response.data.data.filter(v => v.userRoles === "VENDOR");
       setVendors(vendorList);
       if (vendorList.length > 0) setSelectedVendor(vendorList[0].id);
     } catch (err) {
@@ -36,6 +38,7 @@ const ProductInventory = () => {
     setLoading(true);
     try {
       const response = await getProductsByVendor(selectedVendor, currentPage, 10, user.token);
+      console.log(response)
       setProductInventory(response.data.content || response.data);
       setHasNextPage(response.data.hasNext || false);
     } catch (err) {
@@ -45,13 +48,20 @@ const ProductInventory = () => {
     }
   };
 
-  useEffect(() => { fetchVendors(); }, []);
-  useEffect(() => {
-    if (selectedVendor) {
-      setCurrentPage(0); // reset page when vendor changes
-      fetchProducts();
-    }
-  }, [selectedVendor, currentPage]);
+    // Fetch vendors only once when component loads
+    useEffect(() => {
+      if (user?.token) {
+        fetchVendors();
+      }
+    }, [user]);
+
+    // Fetch products when vendor or page changes
+    useEffect(() => {
+      if (selectedVendor && user?.token) {
+        fetchProducts();
+      }
+    }, [selectedVendor, currentPage, user]);
+
 
   const handleToggleStatus = async (productId) => {
     await toggleProductStatus(productId, user.token);

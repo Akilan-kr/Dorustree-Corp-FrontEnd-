@@ -10,7 +10,6 @@ import ExploreProduct from './Pages/ExploreProduct/ExploreProduct';
 import Dashboard from './Pages/Dashboard/Dashboard';
 import RequestVendor from './Pages/RequestVendor/RequestVendor';
 import EditProduct from './Components/EditProduct/EditProduct';
-import AddProduct from './Components/AddProducts/AddProducts';
 import ProductInventory from './Pages/ProductInventory/ProductInventory';
 import ReceivedOrders from './Pages/ReceivedOrders/ReceivedOrders';
 import VendorProfile from './Pages/VendorProfile/VendorProfile';
@@ -18,6 +17,7 @@ import { isUserTokenExpired } from './Services/Authservice';
 import Cart from './Pages/Cart/Cart';
 import PreviousOrders from './Pages/PreviousOrders/PreviousOrders';
 import Order from './Pages/Order/Order';
+import AddProduct from './Pages/AddProducts/AddProducts';
 
 function App() {
   // const [count, setCount] = useState(0)

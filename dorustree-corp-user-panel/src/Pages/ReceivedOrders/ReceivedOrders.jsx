@@ -64,7 +64,7 @@ function ReceivedOrders() {
         <DashboardSidebar />
       </div>
 
-      <div style={{ flex: 1, padding: "40px", background: "#f4f6f9" }}>
+      <div style={{ flex: 1, padding: "40px" }}>
         <h2 style={{ marginBottom: "30px" }}>📦 Received Orders</h2>
 
         {loading && <p>Loading orders...</p>}

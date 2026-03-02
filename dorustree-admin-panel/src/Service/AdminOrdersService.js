@@ -9,6 +9,7 @@ const API_URL = "http://localhost:8080/api/order";
  * @returns {Promise<Array>} list of orders
  */
 export const getAllOrders = async (token) => {
+  console.log(token);
   try {
     const res = await axios.get(`${API_URL}/getallorders`, {
       headers: {

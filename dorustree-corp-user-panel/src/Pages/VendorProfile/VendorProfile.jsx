@@ -53,14 +53,13 @@ function VendorProfile() {
   return (
     <div style={{ display: "flex", minHeight: "100vh" }}>
       {/* Sidebar */}
-      <div style={{ width: "220px", flexShrink: 0, background: '#2c3e50' }}>
+      <div style={{ width: "220px", flexShrink: 0, background: "#2c3e50" }}>
         <DashboardSidebar />
       </div>
 
-      {/* Main Content */}
-      <div style={{ flex: 1, padding: "40px", background: "#f3f4f6" }}>
+      <div style={{ flex: 1, padding: "40px" }}>
         <h2 style={{ marginBottom: "30px", fontWeight: "600" }}>
-          Vendor Dashboard
+          Vendor Profile
         </h2>
 
         {/* Stats Row */}

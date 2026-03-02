@@ -1,5 +1,5 @@
 import React, { useEffect, useContext, useState } from "react";
-import "./ExploreProduct.css";
+// import "./ExploreProduct.css";
 import { StoreContext } from "../../Context/StoreContext";
 
 function ExploreProduct() {
@@ -40,7 +40,7 @@ function ExploreProduct() {
   };
 
   return (
-    <div className="container mt-4">
+    <div className="container mt-2">
 
       {/* Search */}
       <div className="d-flex justify-content-between align-items-center mb-3">
@@ -48,7 +48,7 @@ function ExploreProduct() {
         <input
           type="text"
           className="form-control"
-          style={{ width: "250px" }}
+          style={{ width: "250px", fontSize:"0.8em" }}
           placeholder="Search by name or category..."
           value={search}
           onChange={handleSearch}

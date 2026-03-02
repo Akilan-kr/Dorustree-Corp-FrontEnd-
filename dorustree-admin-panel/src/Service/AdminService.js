@@ -16,7 +16,7 @@ export const getAllUsers = async (token) => {
         "Content-Type": "application/json"
       }
     });
-
+   
     return response;
 
   } catch (error) {
@@ -52,7 +52,7 @@ export const deleteUser = async (userId, token) => {
 
 
  export const getUserById = async (token, userId) => {
-    const res = await axios.get(`${API_URL}/getuser/${userId}`,{
+    const res = await axios.get(`${BASE_URL}/getuser/${userId}`,{
       headers: {
         Authorization: `Bearer ${token}`
       }
