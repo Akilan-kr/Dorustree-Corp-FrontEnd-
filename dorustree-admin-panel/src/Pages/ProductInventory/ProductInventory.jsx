@@ -6,6 +6,7 @@ import { Spinner } from "react-bootstrap";
 import { getAllUsers } from "../../Service/AdminService"; // fetch vendors
 import { getProductsByVendor } from "../../Service/AdminProductService";
 import { deleteProduct, toggleProductStatus } from "../../Service/ProductService";
+import { toast } from "react-toastify";
 
 const ProductInventory = () => {
   const [productInventory, setProductInventory] = useState([]);
@@ -22,13 +23,14 @@ const ProductInventory = () => {
   const fetchVendors = async () => {
     try {
       const response = await getAllUsers(user.token);
-       console.log(response)
+      //  console.log(response)
 
       const vendorList = response.data.data.filter(v => v.userRoles === "VENDOR");
       setVendors(vendorList);
       if (vendorList.length > 0) setSelectedVendor(vendorList[0].id);
     } catch (err) {
       console.error("Error fetching vendors:", err);
+      toast.error("Error while while fetching vendors")
     }
   };
 
@@ -38,11 +40,12 @@ const ProductInventory = () => {
     setLoading(true);
     try {
       const response = await getProductsByVendor(selectedVendor, currentPage, 10, user.token);
-      console.log(response)
+      // console.log(response)
       setProductInventory(response.data.content || response.data);
       setHasNextPage(response.data.hasNext || false);
     } catch (err) {
       console.error("Error fetching products:", err);
+      toast.error("Error while fetching product based on the vendor");
     } finally {
       setLoading(false);
     }
@@ -64,14 +67,27 @@ const ProductInventory = () => {
 
 
   const handleToggleStatus = async (productId) => {
-    await toggleProductStatus(productId, user.token);
-    fetchProducts();
+
+    try{
+      await toggleProductStatus(productId, user.token);
+      fetchProducts();
+      toast.info("Status updated");
+    } catch (error) {
+      console.log(error);
+      toast.error("Error while updating status");
+    }
   };
 
   const handleDelete = async (productId) => {
-    if (window.confirm("Delete this product?")) {
+    try {
+      if (window.confirm("Delete this product?")) {
       await deleteProduct(productId, user.token);
+      toast.warn("Product is deleted");
       fetchProducts();
+    }
+    } catch(error) {
+      console.log(error);
+      toast.error("Error while deleting product");
     }
   };
 

@@ -3,6 +3,7 @@ import DashboardSidebar from "../../Components/DashboardSidebar/DashboardSidebar
 import { getLoggedInUser, getVendorStats } from "../../Services/UserService";
 import { StoreContext } from "../../Context/StoreContext";
 import { FaBoxOpen, FaShoppingCart, FaDollarSign } from "react-icons/fa";
+import {toast} from "react-toastify";
 
 function VendorProfile() {
   const [currentUser, setCurrentUser] = useState(null);
@@ -26,13 +27,14 @@ function VendorProfile() {
       setCurrentUser(response.data.data);
     } catch (error) {
       console.error("Error fetching user:", error);
+      toast.error("Error while Fetching User data");      
     }
   };
 
   const fetchStats = async () => {
     try{
       const response = await getVendorStats(user.token);
-      console.log("stats:",response)
+      // console.log("stats:",response)
       setStats({
         totalProducts: response.data.data.totalProducts,
         totalSales: response.data.data.totalSalesQuantity,
@@ -40,6 +42,7 @@ function VendorProfile() {
       });
     } catch (error){
       console.log("error while fetch vendor stats", error);
+      toast.error("Error while fetching vendor stats");
     }
 
   };
@@ -53,7 +56,7 @@ function VendorProfile() {
   return (
     <div style={{ display: "flex", minHeight: "100vh" }}>
       {/* Sidebar */}
-      <div style={{ width: "220px", flexShrink: 0, background: "#2c3e50" }}>
+      <div style={{ width: "240px", flexShrink: 0, background: "#2c3e50" }}>
         <DashboardSidebar />
       </div>
 
@@ -196,7 +199,7 @@ function VendorProfile() {
             </div>
 
             {/* Centered Edit Button */}
-            <div style={{ textAlign: "center" }}>
+            {/* <div style={{ textAlign: "center" }}>
               <button
                 style={{
                   background: "#2563eb",
@@ -210,8 +213,8 @@ function VendorProfile() {
                 }}
               >
                 Edit Profile
-              </button>
-            </div>
+              </button> 
+            </div>*/}
           </div>
         )}
       </div>

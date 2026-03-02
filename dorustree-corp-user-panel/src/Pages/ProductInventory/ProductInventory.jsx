@@ -4,6 +4,8 @@ import { FaTrash, FaEdit } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { StoreContext } from "../../Context/StoreContext";
 import DashboardSidebar from "../../Components/DashboardSidebar/DashboardSidebar";
+import { toast } from "react-toastify";
+
 
 const ProductInventory = () => {
   const [productInventory, setProductInventory] = useState([]);
@@ -22,6 +24,7 @@ const ProductInventory = () => {
       setHasNextPage(data.data.hasNext || false);
     } catch (err) {
       console.error("Error fetching vendor products:", err);
+      toast.error("Error while fetching vendor products");
     } finally {
       setLoading(false);
     }
@@ -32,14 +35,26 @@ const ProductInventory = () => {
   }, [currentPage]);
 
   const handleToggleStatus = async (productId) => {
-    await toggleProductStatus(productId, user.token);
-    fetchProducts();
+    try{
+      await toggleProductStatus(productId, user.token);
+      toast.success("Status updated")
+      fetchProducts();
+    } catch (error){
+      toast.error("Error while status updated");
+      throw error;
+    }
   };
 
   const handleDelete = async (productId) => {
-    if (window.confirm("Delete this product?")) {
-      await deleteProduct(productId, user.token);
-      fetchProducts();
+    try{
+      if (window.confirm("Delete this product?")) {
+        await deleteProduct(productId, user.token);
+        toast.success("Product Deleted");
+        fetchProducts();
+      }
+   } catch(error){
+      toast.error("Error while Deleting product");
+      throw error;
     }
   };
 

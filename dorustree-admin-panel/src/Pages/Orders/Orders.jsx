@@ -32,6 +32,7 @@ function Orders() {
       setOrders(data);
     } catch (err) {
       console.error("Error fetching orders:", err);
+      toast.error("Error while fetching orders")
     } finally {
       setLoading(false);
     }
@@ -70,6 +71,7 @@ function Orders() {
 
     } catch (err) {
       console.error("Error fetching order details:", err);
+      toast.error("Error while fetchig order details");
     }
 
     setLoadingProducts(prev => ({ ...prev, [orderId]: false }));
@@ -115,7 +117,7 @@ function Orders() {
               onClick={() => toggleExpand(order)}
             >
               <div>
-                <strong>Order #{index + 1}</strong> — Total: ₹{order.totalPrice} — Status: {order.orderStatus}
+                Order <strong>#{index + 1}</strong> — Total: <strong>₹{order.totalPrice}</strong> — Status: <strong>{order.orderStatus}</strong>
               </div>
               <Button variant="outline-primary" size="sm">
                 {expandedOrderId === order.id ? "Hide Details" : "Show Details"}
@@ -141,7 +143,7 @@ function Orders() {
                       <tr>
                         <th>#</th>
                         <th>Product Name</th>
-                        <th>Vendor ID</th>
+                        <th>Vendor Name</th>
                         <th>Quantity</th>
                         <th>Price (₹)</th>
                       </tr>

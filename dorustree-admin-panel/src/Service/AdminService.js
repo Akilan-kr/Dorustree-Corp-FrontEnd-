@@ -60,3 +60,31 @@ export const deleteUser = async (userId, token) => {
     console.log(res)
     return res; 
   };
+
+
+    /* 🔹 Get users by vendor request status */
+  export const getUsersByVendorStatus = async (token, status) => {
+    const res = await axios.get(
+      `${BASE_URL}/getallrequestdetails/${status}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+    return res.data;
+  };
+
+  /* 🔹 Approve / Reject user */
+  export const promoteUser = async (token, userId, status) => {
+    const res = await axios.post(
+      `${BASE_URL}/promote/${userId}/${status}`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+    return res.data;
+  };

@@ -3,6 +3,8 @@ import DashboardSidebar from '../../Components/DashboardSidebar/DashboardSidebar
 import { StoreContext } from '../../Context/StoreContext';
 import { getVendorOrdersByStatus } from '../../Services/OrderService';
 import { getProductById } from '../../Services/ProductService';
+import { toast } from "react-toastify";
+
 
 function PreviousOrders() {
   const { user } = useContext(StoreContext);
@@ -14,7 +16,7 @@ function PreviousOrders() {
       try {
         const response = await getVendorOrdersByStatus(user.token, "Order_Received");
         const vendorOrders = response.data;
-        console.log(response)
+        // console.log(response)
 
         // 🔥 Attach product details
         const enrichedOrders = await Promise.all(
@@ -41,6 +43,7 @@ function PreviousOrders() {
         setOrders(enrichedOrders);
       } catch (error) {
         console.error("Failed to fetch vendor orders:", error);
+        toast.error("Failed to fetch the previous orders");
       } finally {
         setLoading(false);
       }
@@ -54,7 +57,7 @@ function PreviousOrders() {
   return (
     <div style={{ display: "flex", minHeight: "100vh" }}>
       {/* Sidebar */}
-      <div style={{ width: "220px", flexShrink: 0, background: "#2c3e50" }}>
+      <div style={{ width: "240px", flexShrink: 0, background: "#2c3e50" }}>
         <DashboardSidebar />
       </div>
 

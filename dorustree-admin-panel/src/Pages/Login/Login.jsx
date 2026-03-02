@@ -40,31 +40,36 @@ const Login = () => {
     try {
         const response = await loginUser(data);
 
-        console.log("LOGIN RESPONSE:", response);
+        // console.log("LOGIN RESPONSE:", response);
 
-        if (response.status === 202) {
-        const userData = response.data.data;
+        if (response.status === 202 ){
+            if(response.data.data.userRole === "ADMIN"){
+                const userData = response.data.data;
 
-        const userObject = {
-            token: userData.token,
-            email: userData.email,
-            role: userData.userRole
-        };
+                const userObject = {
+                    token: userData.token,
+                    email: userData.email,
+                    role: userData.userRole
+                };
 
-    //         localStorage.setItem("TEST_KEY", "HELLO_WORLD");
+            //         localStorage.setItem("TEST_KEY", "HELLO_WORLD");
 
-    // console.log("Saved value:", localStorage.getItem("TEST_KEY"));
+            // console.log("Saved value:", localStorage.getItem("TEST_KEY"));
 
-    // alert("Check localStorage now");
+            // alert("Check localStorage now");
 
-    
+            
 
-        console.log(JSON.stringify(userObject))
-        setUser(userObject);
-        localStorage.setItem("user", JSON.stringify(userObject));
+                console.log(JSON.stringify(userObject))
+                setUser(userObject);
+                localStorage.setItem("user", JSON.stringify(userObject));
 
-        toast.success("Logged in successfully");
-        navigate("/allusers");
+                toast.success("Logged in successfully");
+                navigate("/dashboard");
+            } else {
+                toast.warn("You dont have a access to this Admin panel, use User panel");
+            }
+ 
         } else {
         toast.error("Invalid credentials");
         }
@@ -100,8 +105,8 @@ const Login = () => {
                         </div>
                     </form>
                     <div className="text-center mt-3">
-                        <div className='mt-4'>Don't have an account?  <Link to='/login' className='text-decoration-none'>Sign up</Link></div>
-                        <a href="#" className="text-decoration-none">Forgot password?</a>
+                        {/* <div className='mt-4'>Don't have an account?  <Link to='/login' className='text-decoration-none'>Sign up</Link></div> */}
+                        {/* <a href="#" className="text-decoration-none">Forgot password?</a> */}
                     </div>
                 </div>
             </div>

@@ -2,6 +2,8 @@ import React, { useEffect, useState, useContext } from "react";
 import { StoreContext } from "../../Context/StoreContext";
 import { getUserOrders, updateOrderStatus } from "../../Services/OrderService";
 import { getProductById } from "../../Services/ProductService";
+import { toast } from "react-toastify";
+
 
 function Order() {
   const { user } = useContext(StoreContext);
@@ -48,7 +50,7 @@ function Order() {
   const handleStatusUpdate = async (orderId, newStatus) => {
     try {
       await updateOrderStatus( user.token, orderId, newStatus);
-
+      toast.success("Order Status is updated to" + newStatus);
       // Update UI instantly
       setOrders((prevOrders) =>
         prevOrders.map((order) =>
@@ -59,6 +61,7 @@ function Order() {
       );
     } catch (error) {
       console.error("Failed to update order status:", error);
+      toast.error("Failed to update the orderstatus")
     }
   };
 

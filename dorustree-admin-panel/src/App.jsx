@@ -14,6 +14,10 @@ import UserManagement from './Pages/UserManagement/UserManagement';
 import Dashboard from './Pages/Dashboard/Dashboard';
 import Orders from './Pages/Orders/Orders';
 import ProductInventory from './Pages/ProductInventory/ProductInventory';
+import RequestFromUser from './Pages/RequestFromUser/RequestFromUser';
+import { ToastContainer } from 'react-toastify';
+import { useLocation } from "react-router-dom";
+
 
 function App() {
     const {user} = useContext(StoreContext);
@@ -31,30 +35,41 @@ function App() {
         }
     }, []);
 
+    const location = useLocation();
+    const isLoginPage = location.pathname === "/login" || location.pathname === "/";
+
+
 
   return (
-    <>
-      <Menubar />
+<>
+    <Menubar />
+    <ToastContainer 
+    autoClose={2000}/>
 
+    {isLoginPage ? (
+      // 🔥 Login layout (no sidebar)
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    ) : (
+      // 🔥 Admin layout
       <div style={{ display: "flex" }}>
-
-        {/* Sidebar */}
         <DashboardSidebar />
 
-        {/* Page Content */}
         <div style={{ flex: 1, padding: "20px" }}>
           <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/allusers" element={<UserManagement />} />
-            <Route path="/productinventory" element={<ProductInventory />} />
-            <Route path="/orders" element={<Orders />} />
+            <Route path="/dashboard" element={user?.role == "ADMIN" ? <Dashboard /> : <Login />} />
+            <Route path="/allusers" element={user?.role == "ADMIN" ? <UserManagement /> : <Login />} />
+            <Route path="/userrequest" element={user?.role === "ADMIN" ? <RequestFromUser /> : <Login />} />
+            <Route path="/productinventory" element={user?.role === "ADMIN" ? <ProductInventory /> : <Login />} />
+            <Route path="/orders" element={user?.role === "ADMIN" ? <Orders /> : <Login />} />
           </Routes>
         </div>
-
       </div>
+    )}
+  </>
 
-    </>
   )
 }
 

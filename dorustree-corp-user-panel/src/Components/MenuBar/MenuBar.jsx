@@ -13,7 +13,6 @@ const Menubar = () => {
 
   const navigate = useNavigate();
 
-
 //   const uniqueItemsInCart = Object.values(quantities).filter(qty => qty > 0).length;
 
   const logout = async(Event) => {
@@ -153,7 +152,28 @@ const Menubar = () => {
 
                 <ul className="dropdown-menu dropdown-menu-end shadow">
 
-                  {user.userRole === "USER" ? (
+                  {user?.userRole === "VENDOR"? (
+                    <>
+                      <li>
+                        <button 
+                          className="dropdown-item"
+                          onClick={() => navigate('/vendorprofile')}
+                        >
+                          Vendor Dashboard
+                        </button>
+                      </li>
+
+                      <li>
+                        <button 
+                          className="dropdown-item text-danger"
+                          onClick={logout}
+                        >
+                          Logout
+                        </button>
+                      </li>
+                    </>
+
+                  ) : (
                     <>
                       <li>
                         <button 
@@ -170,26 +190,6 @@ const Menubar = () => {
                           onClick={() => navigate('/becamevendor')}
                         >
                           Become Vendor
-                        </button>
-                      </li>
-
-                      <li>
-                        <button 
-                          className="dropdown-item text-danger"
-                          onClick={logout}
-                        >
-                          Logout
-                        </button>
-                      </li>
-                    </>
-                  ) : (
-                    <>
-                      <li>
-                        <button 
-                          className="dropdown-item"
-                          onClick={() => navigate('/vendorprofile')}
-                        >
-                          Vendor Dashboard
                         </button>
                       </li>
 

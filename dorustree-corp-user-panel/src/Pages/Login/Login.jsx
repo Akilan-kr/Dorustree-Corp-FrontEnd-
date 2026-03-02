@@ -37,7 +37,7 @@ const Login = () => {
     // console.log("data",data);
     try {
         const response = await loginUser(data);
-        console.log(response)
+        // console.log(response)
         if(response.status === 202){
             toast.success('Logged In succuessfully');
             setUser({
@@ -82,8 +82,8 @@ const Login = () => {
                         </div>
                     </form>
                     <div className="text-center mt-3">
-                        <div className='mt-4'>Don't have an account?  <Link to='/login' className='text-decoration-none'>Sign up</Link></div>
-                        <a href="#" className="text-decoration-none">Forgot password?</a>
+                        <div className='mt-4'>Don't have an account?  <Link to='/register' className='text-decoration-none'>Sign up</Link></div>
+                        {/* <a href="#" className="text-decoration-none">Forgot password?</a> */}
                     </div>
                 </div>
             </div>

@@ -31,6 +31,7 @@ function UserManagement() {
 
     } catch (error) {
       console.error("Error fetching users:", error);
+      toast.error("Error while fetching users")
     } finally {
       setLoading(false);
     }
@@ -48,9 +49,11 @@ function UserManagement() {
 
     try {
       await deleteUser(userId, user.token);
-      fetchUsers(); // refresh the table after deletion
+      fetchUsers();
+      toast.warn("User Deleted") // refresh the table after deletion
     } catch (error) {
       console.error("Error deleting user:", error);
+      toast.error("Error while Deleting users");
     }
   };
 

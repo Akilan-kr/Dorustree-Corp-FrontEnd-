@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
 // import './App.css'
+import { ToastContainer } from "react-toastify";
 import {Route, Routes, useNavigate} from 'react-router-dom';
 import Home from './Pages/Home/Home'
 import MenuBar from './Components/MenuBar/MenuBar';
@@ -18,6 +19,7 @@ import Cart from './Pages/Cart/Cart';
 import PreviousOrders from './Pages/PreviousOrders/PreviousOrders';
 import Order from './Pages/Order/Order';
 import AddProduct from './Pages/AddProducts/AddProducts';
+import { Toast } from 'bootstrap';
 
 function App() {
   // const [count, setCount] = useState(0)
@@ -26,9 +28,14 @@ function App() {
 
     const navigate = useNavigate();
 
+    // if (loading) {
+    //   return null; // prevent first wrong render
+    // }
+
     const logout = () => {
         localStorage.removeItem("user");
         navigate("/login");
+        
     };
 
     useEffect(() => {
@@ -40,18 +47,27 @@ function App() {
   return (
     <div>
       <MenuBar/>
+        <ToastContainer
+            // position="top-right"
+            autoClose={2000}
+            // hideProgressBar={false}
+            // newestOnTop
+            // closeOnClick
+            // pauseOnHover
+            // theme="colored"
+        />
       <Routes>
         <Route path='/' element={<Home />}/>
         <Route path='/login' element={ user.token? <Home /> : <Login />}/>
         <Route path='/register' element={user.token ? <Home /> : <Register />}/>
         <Route path='/explore' element={<ExploreProduct />}/>
         <Route path='/mydashboard' element={user.userRole == "VENDOR" ? <VendorProfile/> : <Home />}/>
-        <Route path='/becamevendor' element={user.userRole == "USER" ? <RequestVendor/> : <Dashboard />}/>
-        <Route path='/addproduct' element={<AddProduct/>}/>
-        <Route path='/productinventory' element={<ProductInventory/>}/>
-        <Route path='/vendorprofile' element={<VendorProfile/>}/>
-        <Route path='/receivedorders' element={<ReceivedOrders/>}/>
-        <Route path='/previousorders' element={<PreviousOrders/>}/>
+        <Route path='/becamevendor' element={user.userRole == "VENDOR" ? <Dashboard /> : <RequestVendor/> }/>
+        <Route path='/addproduct' element={user.userRole == "VENDOR" ? <AddProduct/> : <Home />}/>
+        <Route path='/productinventory' element={user.userRole == "VENDOR" ? <ProductInventory/> : <Home/>}/>
+        <Route path='/vendorprofile' element={user.userRole == "VENDOR" ? <VendorProfile/>  : <Home/> }/>
+        <Route path='/receivedorders' element={user.userRole == "VENDOR" ? <ReceivedOrders/> : <Home/>}/>
+        <Route path='/previousorders' element={user.userRole == "VENDOR" ? <PreviousOrders/> : <Home />}/>
         <Route path='/myorders' element={<Order/>}/>
         <Route path='/cart' element={<Cart/>}/>
         <Route path="/mydashboard/editproduct/:id" element={<EditProduct />} />

@@ -3,6 +3,7 @@ import DashboardSidebar from "../../Components/DashboardSidebar/DashboardSidebar
 import { getVendorOrdersByStatus, updateOrderStatus } from "../../Services/OrderService";
 import { getProductById } from "../../Services/ProductService";
 import { StoreContext } from "../../Context/StoreContext";
+import {toast} from "react-toastify";
 
 function ReceivedOrders() {
   const { user } = useContext(StoreContext);
@@ -34,6 +35,7 @@ function ReceivedOrders() {
 
       setOrders(enrichedOrders);
     } catch (error) {
+      toast.error("Failed to fetch vendor Orders");
       console.error("Failed to fetch vendor orders:", error);
     } finally {
       setLoading(false);
@@ -48,10 +50,12 @@ function ReceivedOrders() {
     try {
       setUpdatingOrderId(orderId);
       await updateOrderStatus(user.token, orderId, newStatus);
+      toast.success("Status updated to ", + newStatus);
       // Refresh orders after update
       await fetchOrders();
     } catch (error) {
       console.error("Failed to update order status:", error);
+      toast.error("Error while update order status");
     } finally {
       setUpdatingOrderId(null);
     }
@@ -60,7 +64,7 @@ function ReceivedOrders() {
   return (
     <div style={{ display: "flex", minHeight: "100vh" }}>
       {/* Sidebar */}
-      <div style={{ width: "220px", flexShrink: 0, background: "#2c3e50" }}>
+      <div style={{ width: "240px", flexShrink: 0, background: "#2c3e50" }}>
         <DashboardSidebar />
       </div>
 

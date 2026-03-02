@@ -3,6 +3,8 @@ import { clearUserCart, getCartData} from "../../Services/CartService";
 import { getProductById } from "../../Services/ProductService";
 import { StoreContext } from "../../Context/StoreContext";
 import { placeOrder } from "../../Services/OrderService";
+import { toast } from "react-toastify";
+
 
 function Cart() {
   const { user, increaseQuantity, decreaseQuantity } = useContext(StoreContext);
@@ -32,6 +34,7 @@ function Cart() {
         setCartItems(items);
       } catch (error) {
         console.error("Error fetching cart:", error);
+        toast.error("Error while Fetching Cart data");
       } finally {
         setLoading(false);
       }
@@ -114,7 +117,7 @@ function Cart() {
 
         await placeOrder(orderRequest, user.token);
 
-        alert("Order placed successfully!");
+        toast.success("Product added successfully!");
 
         // ✅ Clear cart in backend
         await clearUserCart(user.token);

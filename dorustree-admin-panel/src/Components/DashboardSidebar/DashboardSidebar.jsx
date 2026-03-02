@@ -4,7 +4,8 @@ import {
   FaTachometerAlt,
   FaUsers,
   FaBoxes,
-  FaClipboardList
+  FaClipboardList,
+  FaUserClock  
 } from "react-icons/fa";
 
 
@@ -14,6 +15,7 @@ function DashboardSidebar() {
   const menuItems = [
   { label: 'Dashboard', path: '/dashboard', icon: <FaTachometerAlt /> },
   { label: 'All Users', path: '/allusers', icon: <FaUsers /> },
+  { label: 'Request From User', path: '/userrequest', icon: <FaUserClock /> },
   { label: 'Product Inventory', path: '/productinventory', icon: <FaBoxes /> },
   { label: 'All Orders Details', path: '/orders', icon: <FaClipboardList /> }
 

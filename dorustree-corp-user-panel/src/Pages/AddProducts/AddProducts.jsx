@@ -2,6 +2,8 @@ import React, { useContext, useState } from 'react';
 import { addProduct, addProductsFromExcel } from '../../Services/ProductService';
 import { StoreContext } from '../../Context/StoreContext';
 import DashboardSidebar from '../../Components/DashboardSidebar/DashboardSidebar';
+import { toast } from "react-toastify";
+
 
 function AddProduct() {
   const [product, setProduct] = useState({
@@ -27,6 +29,7 @@ function AddProduct() {
       const response = await addProduct(product, user.token);
       if (response.status === 201) {
         setMessage('✅ Product added successfully!');
+        toast.success("Product added successfully!");
         setProduct({
           productName: '',
           productCategory: '',
@@ -37,6 +40,7 @@ function AddProduct() {
       }
     } catch (error) {
       setMessage(error.response?.data || '❌ Error adding product');
+      toast.error("Error while adding products");
     }
   };
 
@@ -54,17 +58,19 @@ function AddProduct() {
       const response = await addProductsFromExcel(formData, user.token);
       if (response.status === 201) {
         setMessage('✅ Products uploaded successfully!');
+        toast.success("Products uploaded successfully!");
         setExcelFile(null);
       }
     } catch (error) {
       setMessage(error.response?.data || '❌ Error uploading Excel');
+      toast.error("Cant upload the file, check Network and try again")
     }
   };
 
   return (
     <div style={{ display: "flex", minHeight: "100vh" }}>
       {/* Sidebar */}
-      <div style={{ width: "220px", flexShrink: 0, background: "#2c3e50" }}>
+      <div style={{ width: "240px", flexShrink: 0, background: "#2c3e50" }}>
         <DashboardSidebar />
       </div>
 
