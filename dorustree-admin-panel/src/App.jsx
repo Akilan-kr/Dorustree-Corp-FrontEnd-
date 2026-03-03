@@ -17,6 +17,7 @@ import ProductInventory from './Pages/ProductInventory/ProductInventory';
 import RequestFromUser from './Pages/RequestFromUser/RequestFromUser';
 import { ToastContainer } from 'react-toastify';
 import { useLocation } from "react-router-dom";
+import EditProduct from './Components/EditProduct/EditProduct';
 
 
 function App() {
@@ -64,6 +65,7 @@ function App() {
             <Route path="/userrequest" element={user?.role === "ADMIN" ? <RequestFromUser /> : <Login />} />
             <Route path="/productinventory" element={user?.role === "ADMIN" ? <ProductInventory /> : <Login />} />
             <Route path="/orders" element={user?.role === "ADMIN" ? <Orders /> : <Login />} />
+            <Route path="/mydashboard/editproduct/:id" element={user?.role === "ADMIN" ? <EditProduct />: <Login/>} />
           </Routes>
         </div>
       </div>

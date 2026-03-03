@@ -70,7 +70,7 @@ function App() {
         <Route path='/previousorders' element={user.userRole == "VENDOR" ? <PreviousOrders/> : <Home />}/>
         <Route path='/myorders' element={<Order/>}/>
         <Route path='/cart' element={<Cart/>}/>
-        <Route path="/mydashboard/editproduct/:id" element={<EditProduct />} />
+        <Route path="/mydashboard/editproduct/:id" element={user.userRole == "VENDOR" ? <EditProduct /> : <Home/>} />
       </Routes>
     </div>
   )
