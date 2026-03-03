@@ -15,7 +15,7 @@ export const registerUser = async(data) => {
 export const loginUser =  async(data) => {
     try {
         const response = await axios.post(API_URL + "login", data);
-        console.log(data);
+        // console.log(data);
         return response;
     } catch (error) {
         throw error;
@@ -31,7 +31,7 @@ export const logoutUser = async (token) => {
 
     return response;
   } catch (error) {
-    console.log(error.response || error);
+    console.error(error.response || error);
   }
 }
 

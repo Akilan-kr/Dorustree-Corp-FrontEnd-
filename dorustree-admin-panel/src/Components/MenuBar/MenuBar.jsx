@@ -23,7 +23,7 @@ const Menubar = () => {
         navigate('/');
       }
     } catch (error) {
-      console.log(error);
+      console.error("Error while logout:",error);
     }
   };
 

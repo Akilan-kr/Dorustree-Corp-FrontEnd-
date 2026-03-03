@@ -53,7 +53,7 @@ const Login = () => {
         }
     } catch (error) {
         toast.error('Unable to login, Please try again.')
-        console.log('Error while login:', error)
+        console.error('Error while login:', error)
     }
 
    };

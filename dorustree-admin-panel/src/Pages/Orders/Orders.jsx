@@ -19,12 +19,12 @@ function Orders() {
 
   // Fetch all orders
   const fetchOrders = async () => {
-    if (!user?.token) {
-      console.log("Token not ready yet");
-      return;
-    }
+    // if (!user?.token) {
+    //   console.log("Token not ready yet");
+    //   return;
+    // }
 
-    console.log("TOKEN SENT:", user.token);
+    // console.log("TOKEN SENT:", user.token);
 
     setLoading(true);
     try {

@@ -113,7 +113,7 @@ function Cart() {
           }))
         };
 
-        console.log("Sending order:", orderRequest);
+        // console.log("Sending order:", orderRequest);
 
         await placeOrder(orderRequest, user.token);
 

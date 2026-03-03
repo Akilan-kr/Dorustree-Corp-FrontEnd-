@@ -60,7 +60,7 @@ const Login = () => {
 
             
 
-                console.log(JSON.stringify(userObject))
+                // console.log(JSON.stringify(userObject))
                 setUser(userObject);
                 localStorage.setItem("user", JSON.stringify(userObject));
 
@@ -75,7 +75,7 @@ const Login = () => {
         }
 
     } catch (error) {
-        console.log("Login error:", error);
+        console.error("Login error:", error);
         toast.error("Unable to login, please try again.");
     }
     };

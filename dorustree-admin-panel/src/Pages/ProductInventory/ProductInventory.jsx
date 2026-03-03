@@ -81,7 +81,7 @@ const ProductInventory = () => {
       fetchProducts();
       toast.info("Status updated");
     } catch (error) {
-      console.log(error);
+      console.error("Error while updating status:", error);
       toast.error("Error while updating status");
     }
   };
@@ -97,7 +97,7 @@ const ProductInventory = () => {
       toast.warn("Product is deleted");
       fetchProducts();
     } catch (error) {
-      console.log(error);
+      console.error("Error while deleting product:",error);
       toast.error("Error while deleting product");
     } finally {
       setShowModal(false);

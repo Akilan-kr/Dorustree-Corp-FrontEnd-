@@ -41,7 +41,7 @@ function VendorProfile() {
         revenue: response.data.data.totalSalesAmount
       });
     } catch (error){
-      console.log("error while fetch vendor stats", error);
+      console.error("error while fetch vendor stats", error);
       toast.error("Error while fetching vendor stats");
     }
 

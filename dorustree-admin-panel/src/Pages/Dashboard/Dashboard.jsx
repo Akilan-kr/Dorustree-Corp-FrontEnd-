@@ -5,12 +5,16 @@ import { FaUsers, FaBoxes, FaClipboardList, FaDollarSign, FaUserClock } from "re
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import { getDashboardStats } from "../../Service/AdminDashboardService";
 import {toast} from "react-toastify"
+import { useNavigate } from "react-router-dom";
+
 
 const AdminDashboard = () => {
   const { user } = useContext(StoreContext);
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
+  
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
   useEffect(() => {
@@ -40,7 +44,7 @@ const AdminDashboard = () => {
 
   const userData = [
     { name: "Vendors", value: stats.totalVendors },
-    { name: "Over All Users", value: stats.totalUsers },
+    // { name: "Over All Users", value: stats.totalUsers },
     { name: "User Request For Vendor", value: stats.pendingVendorRequests },
     { name: "Customers", value: stats.totalUsers - stats.totalVendors },
   ];
@@ -59,13 +63,17 @@ const AdminDashboard = () => {
       {/* Top Stats Cards */}
       <Row className="mb-4">
         {[
-          { icon: <FaUsers size={28} />, title: "Total Users", value: stats.totalUsers },
-          { icon: <FaUserClock size={28} />, title: "Pending Vendor Requests", value: stats.pendingVendorRequests },
-          { icon: <FaBoxes size={28} />, title: "Total Products", value: stats.totalProducts },
+          { icon: <FaUsers size={28} />, title: "Total Users", value: stats.totalUsers, path: "/allusers"},
+          { icon: <FaUserClock size={28} />, title: "Pending Vendor Requests", value: stats.pendingVendorRequests, path: "/userrequest" },
+          { icon: <FaBoxes size={28} />, title: "Total Products", value: stats.totalProducts, path: "/productinventory" },
           { icon: <FaDollarSign size={28} />, title: "Total Revenue", value: formatCurrency(stats.revenueTotal) },
         ].map((card, idx) => (
           <Col key={idx} md={3} className="mb-3">
-            <Card className="shadow-sm text-center h-100 dashboard-card">
+            <Card 
+              className="shadow-sm text-center h-100 dashboard-card"
+              style={{ cursor: card.path ? "pointer" : "default" }}
+              onClick={() => card.path && navigate(card.path)} // navigate if path exists
+            >
               <Card.Body className="d-flex flex-column justify-content-center align-items-center">
                 <div className="mb-2">{card.icon}</div>
                 <h4>{card.value}</h4>
@@ -75,6 +83,7 @@ const AdminDashboard = () => {
           </Col>
         ))}
       </Row>
+
 
       {/* Pie Charts */}
       <Row>

@@ -57,7 +57,7 @@ export const deleteUser = async (userId, token) => {
         Authorization: `Bearer ${token}`
       }
     });
-    console.log(res)
+    // console.log(res)
     return res; 
   };
 

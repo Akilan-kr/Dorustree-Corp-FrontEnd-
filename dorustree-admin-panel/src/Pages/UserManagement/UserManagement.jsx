@@ -25,7 +25,7 @@ function UserManagement() {
       setLoading(true);
       const response = await getAllUsers(user.token);
       const data = response.data.data;
-      console.log(data)
+      // console.log(data)
 
       setUsers(data);
 

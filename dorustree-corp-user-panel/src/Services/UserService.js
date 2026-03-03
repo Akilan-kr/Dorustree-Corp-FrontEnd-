@@ -9,7 +9,7 @@ const API_URL = "http://localhost:8080/api/users";
         Authorization: `Bearer ${token}`
       }
     });
-    console.log(res)
+    // console.log(res)
     return res; 
   };
 
@@ -19,6 +19,6 @@ export const getVendorStats = async (token) => {
         Authorization: `Bearer ${token}`
       }
     });
-    console.log(res)
+    // console.log(res)
     return res; 
 };

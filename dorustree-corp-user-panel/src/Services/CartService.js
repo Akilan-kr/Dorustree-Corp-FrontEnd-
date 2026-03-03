@@ -4,7 +4,7 @@ const API_URL = 'http://localhost:8080/api/cart/';
 
 export const addToCart = async (productId, token) => {
     try {
-        console.log(productId);
+        // console.log(productId);
         await axios.post(
             API_URL + "addtocart",
             { 
@@ -13,7 +13,7 @@ export const addToCart = async (productId, token) => {
             { headers: { Authorization: `Bearer ${token}` } }
         );
     } catch (error) {
-        console.log('Error while adding item to cart:', error);
+        console.error('Error while adding item to cart:', error);
         throw error;
     }
 };
@@ -21,7 +21,7 @@ export const addToCart = async (productId, token) => {
 
 export const removeQuantityFromCart = async(productId, token) =>{
     try {
-        console.log(productId);
+        // console.log(productId);
         await axios.post(
             API_URL + "removefromcart",
             { 
@@ -30,7 +30,7 @@ export const removeQuantityFromCart = async(productId, token) =>{
             { headers: { Authorization: `Bearer ${token}` } }
         );
     } catch (error) {
-        console.log('Error while adding item to cart:', error);
+        console.error('Error while adding item to cart:', error);
         throw error;
     }
 }
@@ -42,7 +42,7 @@ export const getCartData = async(token) =>{
 
         return response.data.items
     } catch (error) {
-        console.log('Error fetching the cart data:', error);
+        console.error('Error fetching the cart data:', error);
         throw error;
     }
 }
