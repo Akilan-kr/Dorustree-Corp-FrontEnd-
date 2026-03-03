@@ -4,7 +4,7 @@ import { StoreContext } from "../../Context/StoreContext";
 import { getProductById, updateProduct } from "../../Services/ProductService";
 import Dashboard from "../../Pages/Dashboard/Dashboard";
 import DashboardSidebar from "../DashboardSidebar/DashboardSidebar";
-
+import {toast} from "react-toastify";
 const EditProduct = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -26,10 +26,11 @@ const EditProduct = () => {
     const fetchProduct = async () => {
       try {
         const data = await getProductById(id, user.token);
-        console.log("in edit: ",data.data)
+        // console.log("in edit: ",data.data)
         setProduct(data.data); // adjust if wrapped
       } catch (err) {
         console.error("Error fetching product:", err);
+        toast.error("Error while fetching the desired product")
       } finally {
         setLoading(false);
       }
@@ -56,10 +57,11 @@ const EditProduct = () => {
 
     try {
       await updateProduct(id, product, user.token);
-      alert("Product updated successfully");
+      toast.success("Product updated successfully");
       navigate("/mydashboard");
     } catch (err) {
       console.error("Error updating product:", err);
+      toast.error("Error while updating product")
     } finally {
       setSaving(false);
     }

@@ -2,12 +2,18 @@ import React, { useContext, useEffect, useState } from "react";
 import { StoreContext } from "../../Context/StoreContext";
 import { Spinner, Table, Badge, Card, Row, Col, Button } from "react-bootstrap";
 import { getAllUsers, deleteUser } from "../../Service/AdminService"; // assume you have a deleteUser API
+import ConfirmModal from "../../Components/ConfirmModal/ConfirmModal";
+import { toast } from "react-toastify";
+
 
 function UserManagement() {
   const { user } = useContext(StoreContext);
 
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState(null);
+
   const [counts, setCounts] = useState({
     ADMIN: 0,
     VENDOR: 0,
@@ -44,18 +50,26 @@ function UserManagement() {
   }, [user]);
 
 
-  const handleDeleteUser = async (userId) => {
-    if (!window.confirm("Are you sure you want to delete this user?")) return;
+  const handleDeleteUser = (userId) => {
+    setSelectedUserId(userId);
+    setShowModal(true);
+  };
 
+    const confirmDeleteUser = async () => {
     try {
-      await deleteUser(userId, user.token);
+      await deleteUser(selectedUserId, user.token);
       fetchUsers();
-      toast.warn("User Deleted") // refresh the table after deletion
+      toast.warn("User Deleted");
     } catch (error) {
       console.error("Error deleting user:", error);
-      toast.error("Error while Deleting users");
+      toast.error("Error while deleting user");
+    } finally {
+      setShowModal(false);
+      setSelectedUserId(null);
     }
   };
+
+
 
   // lighter pastel colors
   const cardColors = {
@@ -156,6 +170,17 @@ function UserManagement() {
           </tbody>
         </Table>
       )}
+      <ConfirmModal
+        show={showModal}
+        title="Delete User"
+        message="Are you sure you want to delete this user? This action cannot be undone."
+        onConfirm={confirmDeleteUser}
+        onCancel={() => {
+          setShowModal(false);
+          setSelectedUserId(null);
+        }}
+      />
+
     </div>
   );
 }

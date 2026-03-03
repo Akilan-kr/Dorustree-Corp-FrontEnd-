@@ -7,6 +7,9 @@ import { getAllUsers } from "../../Service/AdminService"; // fetch vendors
 import { getProductsByVendor } from "../../Service/AdminProductService";
 import { deleteProduct, toggleProductStatus } from "../../Service/ProductService";
 import { toast } from "react-toastify";
+import ConfirmModal from "../../Components/ConfirmModal/ConfirmModal";
+
+
 
 const ProductInventory = () => {
   const [productInventory, setProductInventory] = useState([]);
@@ -15,6 +18,11 @@ const ProductInventory = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [hasNextPage, setHasNextPage] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState(null);
+
+
+
 
   const { user } = useContext(StoreContext);
   const navigate = useNavigate();
@@ -78,18 +86,28 @@ const ProductInventory = () => {
     }
   };
 
-  const handleDelete = async (productId) => {
+  const handleDelete = (productId) => {
+    setSelectedProductId(productId);
+    setShowModal(true);
+  };
+
+    const confirmDelete = async () => {
     try {
-      if (window.confirm("Delete this product?")) {
-      await deleteProduct(productId, user.token);
+      await deleteProduct(selectedProductId, user.token);
       toast.warn("Product is deleted");
       fetchProducts();
-    }
-    } catch(error) {
+    } catch (error) {
       console.log(error);
       toast.error("Error while deleting product");
+    } finally {
+      setShowModal(false);
+      setSelectedProductId(null);
     }
   };
+
+  
+
+
 
   const totalProducts = productInventory.length;
   const activeProducts = productInventory.filter(p => p.productStatus === "ACTIVE").length;
@@ -208,6 +226,13 @@ const ProductInventory = () => {
           </button>
         </div>
       </div>
+      <ConfirmModal
+        show={showModal}
+        title="Delete Product"
+        message="Are you sure you want to delete this product? This action cannot be undone."
+        onConfirm={confirmDelete}
+        onCancel={() => setShowModal(false)}
+      />
     </div>
   );
 };

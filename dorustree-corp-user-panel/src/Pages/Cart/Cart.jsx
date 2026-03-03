@@ -128,7 +128,7 @@ function Cart() {
 
       } catch (error) {
         console.error("Order failed:", error);
-        alert("Failed to place order");
+        toast.error("Failed to place order");
       }
   };
 

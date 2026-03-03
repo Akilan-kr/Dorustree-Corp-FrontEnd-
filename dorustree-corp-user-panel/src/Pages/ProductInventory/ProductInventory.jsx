@@ -4,6 +4,7 @@ import { FaTrash, FaEdit } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { StoreContext } from "../../Context/StoreContext";
 import DashboardSidebar from "../../Components/DashboardSidebar/DashboardSidebar";
+import ConfirmModal from "../../Components/ConfirmModal/ConfirmModal";
 import { toast } from "react-toastify";
 
 
@@ -12,6 +13,9 @@ const ProductInventory = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [hasNextPage, setHasNextPage] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState(null);
+
 
   const navigate = useNavigate();
   const { user } = useContext(StoreContext);
@@ -45,18 +49,25 @@ const ProductInventory = () => {
     }
   };
 
-  const handleDelete = async (productId) => {
-    try{
-      if (window.confirm("Delete this product?")) {
-        await deleteProduct(productId, user.token);
-        toast.success("Product Deleted");
-        fetchProducts();
-      }
-   } catch(error){
-      toast.error("Error while Deleting product");
-      throw error;
+  const handleDelete = (productId) => {
+    setSelectedProductId(productId);
+    setShowModal(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await deleteProduct(selectedProductId, user.token);
+      toast.success("Product Deleted");
+      fetchProducts();
+    } catch (error) {
+      toast.error("Error while deleting product");
+    } finally {
+      setShowModal(false);
+      setSelectedProductId(null);
     }
   };
+
+
 
   const totalProducts = productInventory.length;
   const activeProducts = productInventory.filter(p => p.productStatus === "ACTIVE").length;
@@ -184,6 +195,17 @@ const ProductInventory = () => {
           </button>
         </div>
       </div>
+      <ConfirmModal
+        show={showModal}
+        title="Delete Product"
+        message="Are you sure you want to delete this product? This action cannot be undone."
+        onConfirm={confirmDelete}
+        onCancel={() => {
+          setShowModal(false);
+          setSelectedProductId(null);
+        }}
+      />
+
     </div>
   );
 };
