@@ -109,7 +109,7 @@ function VendorProfile() {
           >
             <FaShoppingCart size={30} />
             <div>
-              <p style={{ fontSize: "14px", margin: 0 }}>Total Sales</p>
+              <p style={{ fontSize: "14px", margin: 0 }}>Total Quantity Sales</p>
               <h2 style={{ margin: 0 }}>{stats.totalSales}</h2>
             </div>
           </div>

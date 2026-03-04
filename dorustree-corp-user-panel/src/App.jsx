@@ -24,7 +24,7 @@ import { Toast } from 'bootstrap';
 function App() {
   // const [count, setCount] = useState(0)
 
-  const {user} = useContext(StoreContext);
+    const { user, setUser } = useContext(StoreContext);
 
     const navigate = useNavigate();
 
@@ -34,15 +34,27 @@ function App() {
 
     const logout = () => {
         localStorage.removeItem("user");
+
+        setUser({
+            email: "",
+            userRole: "",
+            token: ""
+        });
+
         navigate("/login");
-        
     };
 
+
     useEffect(() => {
+      const interval = setInterval(() => {
         if (isUserTokenExpired()) {
             logout();
         }
+      }, 60000); // check every 1 min
+
+      return () => clearInterval(interval);
     }, []);
+
 
   return (
     <div>

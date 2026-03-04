@@ -109,7 +109,7 @@ function AddProduct() {
                 </select>
               </div>
 
-              <button type="submit" style={primaryButton}>
+              <button type="submit" style={secondaryButton}>
                 Add Product
               </button>
             </form>
@@ -150,6 +150,19 @@ function AddProduct() {
               • productQuantity<br />
               • productStatus
             </div>
+
+            <button
+              type="button"
+              onClick={() => window.open("/bulk-upload-template.xlsx")}
+              style={{
+                ...secondaryButton,
+                marginTop: "10px",
+                background: "#34495e"
+              }}
+            >
+              Download Template
+            </button>
+
           </div>
         </div>
 

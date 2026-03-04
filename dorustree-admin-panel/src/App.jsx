@@ -31,10 +31,15 @@ function App() {
     };
 
     useEffect(() => {
+      const interval = setInterval(() => {
         if (isUserTokenExpired()) {
             logout();
         }
+      }, 60000); // check every 1 min
+
+      return () => clearInterval(interval);
     }, []);
+
 
     const location = useLocation();
     const isLoginPage = location.pathname === "/login" || location.pathname === "/";

@@ -70,9 +70,9 @@ const EditProduct = () => {
   if (loading) return <div className="text-center mt-5">Loading...</div>;
 
   return (
-    <div style={{ display: 'flex', height: '100vh', fontFamily: 'Arial, sans-serif' }}>
+    <div style={{ display: 'flex', minheight: '100vh' }}>
       {/* Sidebar */}
-      <div style={{ width: '220px', flexShrink: 0 }}>
+      <div style={{ width: '240px', flexShrink: 0 }}>
         <DashboardSidebar />
       </div>
     <div className="container mt-4">
@@ -124,7 +124,7 @@ const EditProduct = () => {
           />
         </div>
 
-        <div className="mb-3">
+        {/* <div className="mb-3">
           <label className="form-label">Status</label>
           <select
             className="form-control"
@@ -135,7 +135,7 @@ const EditProduct = () => {
             <option value="ACTIVE">ACTIVE</option>
             <option value="INACTIVE">INACTIVE</option>
           </select>
-        </div>
+        </div> */}
 
         <button
           type="submit"
