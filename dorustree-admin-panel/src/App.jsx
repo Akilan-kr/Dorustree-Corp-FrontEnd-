@@ -54,10 +54,11 @@ function App() {
 
     {isLoginPage ? (
       // 🔥 Login layout (no sidebar)
+      !user?.token ? (
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
-      </Routes>
+      </Routes> ) : navigate('/dashboard')
     ) : (
       // 🔥 Admin layout
       <div style={{ display: "flex" }}>
